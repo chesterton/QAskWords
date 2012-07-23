@@ -76,8 +76,8 @@ void MainWindow::activateButtons(bool activate)
 void MainWindow::updateStatusBar()
 {
   int questions = ui->spinBoxQuestions->value();
-  int wrongAnswers = questionNumber - 1 - correctAnswers;
-  int successRate = questions > 0 ? correctAnswers * 100 / questions : 0;
+  int wrongAnswers = (questionNumber - 1) - correctAnswers;
+  int successRate = (questionNumber - 1) > 0 ? correctAnswers * 100 / (questionNumber - 1) : 0;
   QString results = tr("Question ") + QString::number(questionNumber) + "/" + QString::number(questions)
     + tr(" (Correct: ") + QString::number(correctAnswers) + tr(", Wrong: ") + QString::number(wrongAnswers)
     + tr(", Success rate: ") + QString::number(successRate) + " %)";
@@ -100,7 +100,7 @@ void MainWindow::start()
   questionNumber = 0;
   correctAnswers = 0;
   qsrand(QTime::currentTime().msec());
-  ui->tableWidget->clear();
+  ui->tableWidget->setRowCount(0);
 
   ui->labelQuestion->show();
   activateButtons(false);
@@ -112,12 +112,11 @@ void MainWindow::start()
 void MainWindow::stop()
 {
   int questions = ui->spinBoxQuestions->value();
-  int wrongAnswers = questionNumber - 1 - correctAnswers;
-  int successRate = questions > 0 ? correctAnswers * 100 / questions : 0;
+  int wrongAnswers = questionNumber - correctAnswers;
+  int successRate = questionNumber > 0 ? correctAnswers * 100 / questionNumber : 0;
   QString results = tr("Question ") + QString::number(questionNumber) + "/" + QString::number(questions)
     + tr(" (Correct: ") + QString::number(correctAnswers) + tr(", Wrong: ") + QString::number(wrongAnswers)
     + tr(", Success rate: ") + QString::number(successRate) + " %)";
-  //TODO: finish and show results
   QMessageBox::information(this, tr("Final results"), results);
   ui->labelQuestion->hide();
   activateButtons();
@@ -165,11 +164,11 @@ void MainWindow::showNextQuestion()
     selectQuestion();
     int posibleAnswers = questionsAndAnswers[questionId].count() - 1;
     ui->labelQuestion->setText(questionsAndAnswers[questionId][0] + (posibleAnswers > 1 ? " (" + QString::number(posibleAnswers) + ")" : ""));
+    updateStatusBar();
   }
   else {
     stop();
   }
-  updateStatusBar();
 }
 
 void MainWindow::selectQuestion()
