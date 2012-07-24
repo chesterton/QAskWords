@@ -25,9 +25,10 @@ private:
   };
 
   Ui::MainWindow *ui;
+  QActionGroup *actionGroupEncoding;
+  QString csvFolder;
   QList<QStringList> questionsAndAnswers;
   QList<int> questionsAlreadyAsked;
-  QActionGroup *actionGroupEncoding;
   int encoding;
   int questionNumber;
   int questionId;
@@ -39,6 +40,7 @@ private:
 private slots:
   void activateButtons(bool activate = true);
   void updateStatusBar();
+  void populateComboCsvFile();
 
   void start();
   void stop();
@@ -48,7 +50,12 @@ private slots:
   void acceptAnswerClicked();
   bool checkAnswer();
   void addRow();
+  QString textResult(int n);
 
+  void showAbout();
+  void showAboutQt();
+  void selectCsvFolder();
+  void resetCsvFolder();
   void setEncoding(QAction *action);
   void readSettings();
   void writeSettings();

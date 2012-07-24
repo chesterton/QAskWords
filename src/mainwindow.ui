@@ -79,7 +79,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboCategory"/>
+       <widget class="QComboBox" name="comboCsvFile"/>
       </item>
      </layout>
     </item>
@@ -151,6 +151,9 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionSelectCsvFolder"/>
+    <addaction name="actionResetCsvFolder"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menu_Options">
@@ -171,7 +174,8 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="action_About"/>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAboutQt"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Options"/>
@@ -186,7 +190,7 @@
     <string>Stop</string>
    </property>
   </action>
-  <action name="action_About">
+  <action name="actionAbout">
    <property name="text">
     <string>&amp;About</string>
    </property>
@@ -229,6 +233,24 @@
    </property>
    <property name="text">
     <string>&amp;Show only wrong answers</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="text">
+    <string>A&amp;bout Qt</string>
+   </property>
+  </action>
+  <action name="actionSelectCsvFolder">
+   <property name="text">
+    <string>&amp;Select csv folder</string>
+   </property>
+  </action>
+  <action name="actionResetCsvFolder">
+   <property name="text">
+    <string>&amp;Reset csv folder</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset csv folder</string>
    </property>
   </action>
  </widget>

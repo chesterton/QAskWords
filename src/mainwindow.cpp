@@ -7,6 +7,7 @@
 #include <QTime>
 #include <QSettings>
 #include <QMessageBox>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -20,12 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
   readSettings();
 
   ui->labelQuestion->hide();
+  populateComboCsvFile();
   activateButtons();
 
-  //TODO: game working
-  //TODO: more options
-  //TODO: about, about qt
-  //TODO: compile for windows
   //TODO: editor
 }
 
@@ -40,9 +38,6 @@ void MainWindow::createObjects()
   actionGroupEncoding->addAction(ui->actionUTF_8);
   actionGroupEncoding->addAction(ui->actionISO_8859_1);
 
-  //add filenames found in csv folder to the combobox
-  ui->comboCategory->insertItems(0, QDir("csv").entryList(QStringList("*.csv"), QDir::Files, QDir::Name).replaceInStrings(".csv", ""));
-
   ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
   ui->tableWidget->verticalHeader()->hide();
   QStringList headerLabels(QString(tr("Answer,Translations,Original")).split(","));
@@ -56,8 +51,11 @@ void MainWindow::createObjects()
 void MainWindow::createConnections()
 {
   connect(actionGroupEncoding, SIGNAL(triggered(QAction*)), this, SLOT(setEncoding(QAction*)));
-
   connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+  connect(ui->actionSelectCsvFolder, SIGNAL(triggered()), this, SLOT(selectCsvFolder()));
+  connect(ui->actionResetCsvFolder, SIGNAL(triggered()), this, SLOT(resetCsvFolder()));
+  connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+  connect(ui->actionAboutQt, SIGNAL(triggered()), this, SLOT(showAboutQt()));
   connect(ui->buttonStart, SIGNAL(clicked()), this, SLOT(start()));
   connect(ui->buttonStop, SIGNAL(clicked()), this, SLOT(stop()));
   connect(ui->buttonAcceptAnswer, SIGNAL(clicked()), this, SLOT(acceptAnswerClicked()));
@@ -65,12 +63,13 @@ void MainWindow::createConnections()
 
 void MainWindow::activateButtons(bool activate)
 {
-  ui->buttonStart->setEnabled(activate);
+  bool comboItemSelected = ui->comboCsvFile->currentIndex() != -1;
+  ui->buttonStart->setEnabled(activate && comboItemSelected);
   ui->buttonStop->setEnabled(!activate);
   ui->edAnswer->setEnabled(!activate);
   ui->buttonAcceptAnswer->setEnabled(!activate);
   ui->spinBoxQuestions->setEnabled(activate);
-  ui->comboCategory->setEnabled(activate);
+  ui->comboCsvFile->setEnabled(activate);
 }
 
 void MainWindow::updateStatusBar()
@@ -83,6 +82,13 @@ void MainWindow::updateStatusBar()
     + tr(", Success rate: ") + QString::number(successRate) + " %)";
   ui->statusBar->showMessage(results);
   //TODO: add progress bar
+}
+
+//add filenames found in csv folder to the combobox
+void MainWindow::populateComboCsvFile()
+{
+  ui->comboCsvFile->clear();
+  ui->comboCsvFile->insertItems(0, QDir(csvFolder).entryList(QStringList("*.csv"), QDir::Files, QDir::Name).replaceInStrings(".csv", ""));
 }
 
 void MainWindow::start()
@@ -111,12 +117,13 @@ void MainWindow::start()
 
 void MainWindow::stop()
 {
-  int questions = ui->spinBoxQuestions->value();
   int wrongAnswers = questionNumber - correctAnswers;
   int successRate = questionNumber > 0 ? correctAnswers * 100 / questionNumber : 0;
-  QString results = tr("Question ") + QString::number(questionNumber) + "/" + QString::number(questions)
-    + tr(" (Correct: ") + QString::number(correctAnswers) + tr(", Wrong: ") + QString::number(wrongAnswers)
-    + tr(", Success rate: ") + QString::number(successRate) + " %)";
+  QString results = tr("Questions: ") + QString::number(questionNumber) + "\n"
+    + tr("Correct: ") + QString::number(correctAnswers) + "\n"
+    + tr("Wrong: ") + QString::number(wrongAnswers) + "\n"
+    + tr("Success rate: ") + QString::number(successRate) + " %" + "\n"
+    + textResult(successRate);
   QMessageBox::information(this, tr("Final results"), results);
   ui->labelQuestion->hide();
   activateButtons();
@@ -127,7 +134,7 @@ bool MainWindow::readQuestionsAndAnswers()
   questionsAndAnswers.clear();
   questionsAlreadyAsked.clear();
 
-  QString fileName = "csv/" + ui->comboCategory->currentText() + ".csv";
+  QString fileName = csvFolder + ui->comboCsvFile->currentText() + ".csv";
   QFile file(fileName);
   if(!file.open(QIODevice::ReadOnly  | QIODevice::Text)) {
     QMessageBox::warning(this, tr("Error"), tr("Error opening file ") + fileName + ": " + file.errorString());
@@ -204,11 +211,23 @@ void MainWindow::acceptAnswerClicked()
 
 bool MainWindow::checkAnswer()
 {
-  //TODO: return answer correct or not
-  if(ui->edAnswer->text().trimmed() == questionsAndAnswers[questionId][0])
-    return true;
-  else
+  int translationsCount = questionsAndAnswers[questionId].count() - 1;
+  QStringList answers = ui->edAnswer->text().split(",");
+  int answersCount = answers.count();
+
+  if(translationsCount != answersCount)
     return false;
+
+  int correct = 0;
+  for(int i = 1; i <= translationsCount; i++) {
+    for(int j = 0; j < answersCount; j++) {
+      if(answers[j].trimmed().compare(questionsAndAnswers[questionId][i], Qt::CaseInsensitive) == 0)
+        correct++;
+      if(correct == translationsCount)
+        return true;
+    }
+  }
+  return false;
 }
 
 void MainWindow::addRow()
@@ -223,6 +242,56 @@ void MainWindow::addRow()
   ui->tableWidget->setItem(0, 2, new QTableWidgetItem(questionsAndAnswers[questionId][0]));
 }
 
+QString MainWindow::textResult(int n)
+{
+  if(n == 100)
+    return tr("Perfect. You're the best!");
+  else if(n >= 90)
+    return tr("Almost perfect. You're great!");
+  else if(n >= 75)
+    return tr("Pretty good. You're going in the right direction.");
+  else if(n >= 50)
+    return tr("Acceptable. You need to practice a little more.");
+  else if(n >= 35)
+    return tr("Pretty bad. You need to practice a lot more.");
+  else if(n >= 20)
+    return tr("You're very bad, but don't despair. Some day you'll make it if you keep trying.");
+  else
+    return tr("Are you kidding me? I can't believe you're really so bad.");
+}
+
+void MainWindow::showAbout()
+{
+  QMessageBox::about(this, tr("About QAskWords"),
+    tr("QAskWords is a simple application that makes words translation tests by reading csv files (sepearated by semicolons) containing rows with a word and one or more translations for that word.")
+    + tr("Enjoy it and send comments, bug reports, or whatever you want to miguelescudero@users.sourceforge.net.") + "\n\n"
+    + tr("Credits:") + "\n"
+    + tr("Developer:") + " Miguel Escudero" + "\n"
+    + tr("Spanish translation:") + " Miguel Escudero" + "\n"
+    + tr("Galician translation:") + " Miguel Escudero" + "\n");
+}
+
+void MainWindow::showAboutQt()
+{
+  QMessageBox::aboutQt(this);
+}
+
+void MainWindow::selectCsvFolder()
+{
+  QString folder = QFileDialog::getExistingDirectory(this, tr("Select a folder containing CSV files."), csvFolder);
+  if(!folder.isEmpty() && QDir(folder).isReadable())
+    csvFolder = folder;
+  populateComboCsvFile();
+  activateButtons();
+}
+
+void MainWindow::resetCsvFolder()
+{
+  csvFolder = "csv/";
+  populateComboCsvFile();
+  activateButtons();
+}
+
 void MainWindow::setEncoding(QAction *action)
 {
   if(action->objectName() == "actionUTF_8")
@@ -235,6 +304,7 @@ void MainWindow::readSettings()
 {
   QSettings settings;
   settings.beginGroup("General");
+  csvFolder = settings.value("csvFolder", "csv/").toString();
   encoding = settings.value("encoding", UTF_8).toInt();
   if(encoding < UTF_8 || encoding > ISO_8859_1)
     encoding = UTF_8;
@@ -249,6 +319,7 @@ void MainWindow::writeSettings()
 {
   QSettings settings;
   settings.beginGroup("General");
+  settings.setValue("csvFolder", csvFolder);
   settings.setValue("encoding", encoding);
   settings.setValue("questions", ui->spinBoxQuestions->value());
   settings.setValue("showOnlyWrongAnswers", ui->actionShowOnlyWrongAnswers->isChecked());
