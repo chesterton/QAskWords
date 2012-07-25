@@ -1,13 +1,20 @@
 #include "mainwindow.h"
 #include "../compile/ui_mainwindow.h"
+#include "itemdelegate.h"
 #include <QActionGroup>
 #include <QCloseEvent>
+#include <QDesktopServices>
 #include <QDir>
+#include <QFileDialog>
+#include <QMessageBox>
+//#include <QResizeEvent>
+#include <QScrollBar>
+#include <QSettings>
+//#include <QShowEvent>
 #include <QTextStream>
 #include <QTime>
-#include <QSettings>
-#include <QMessageBox>
-#include <QFileDialog>
+#include <QUrl>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -24,6 +31,16 @@ MainWindow::MainWindow(QWidget *parent) :
   populateComboCsvFile();
   activateButtons();
 
+  //DONE: diálogo para cambiar idiomas
+  //DONE: guardar los tamaños de las cabeceras de la tabla
+  //DONE: poner líneas en la tabla
+  //DONE: añadir entrada en el menú para abrir el explorer en la carpeta csv
+  //DONE: al meter un texto vacío debería aparecer -empty- en la tabla
+
+  //TODO: añadir los csv de patri al repositorio
+  //TODO: configurar .pro para que sea instalable en linux con todos los csv de muestra. puede que haya que cambiar la carpeta por defecto.
+  //TODO: mejorar readme para poner algo decente en github
+  //TODO: publicar en qtapps, tanto la versión para linux como la versión para windows
   //TODO: editor
 }
 
@@ -38,14 +55,13 @@ void MainWindow::createObjects()
   actionGroupEncoding->addAction(ui->actionUTF_8);
   actionGroupEncoding->addAction(ui->actionISO_8859_1);
 
-  ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  ui->tableWidget->verticalHeader()->hide();
-  QStringList headerLabels(QString(tr("Answer,Translations,Original")).split(","));
+  ui->tableWidget->setItemDelegate(new ItemDelegate(ui->tableWidget));
+  QStringList headerLabels(QString(tr("Answer,Correct answers,Original word")).split(","));
   int headerLabelsCount = headerLabels.count();
   ui->tableWidget->setColumnCount(headerLabelsCount);
   ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
   for(int i = 0; i < headerLabelsCount; i++)
-    ui->tableWidget->setColumnWidth(i, 192);
+    ui->tableWidget->horizontalHeaderItem(i)->setTextAlignment(Qt::AlignLeft);
 }
 
 void MainWindow::createConnections()
@@ -53,7 +69,9 @@ void MainWindow::createConnections()
   connect(actionGroupEncoding, SIGNAL(triggered(QAction*)), this, SLOT(setEncoding(QAction*)));
   connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
   connect(ui->actionSelectCsvFolder, SIGNAL(triggered()), this, SLOT(selectCsvFolder()));
+  connect(ui->actionOpenCsvFolder, SIGNAL(triggered()), this, SLOT(openCsvFolder()));
   connect(ui->actionResetCsvFolder, SIGNAL(triggered()), this, SLOT(resetCsvFolder()));
+  connect(ui->actionSelectLanguage, SIGNAL(triggered()), this, SLOT(selectLanguage()));
   connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
   connect(ui->actionAboutQt, SIGNAL(triggered()), this, SLOT(showAboutQt()));
   connect(ui->buttonStart, SIGNAL(clicked()), this, SLOT(start()));
@@ -72,16 +90,16 @@ void MainWindow::activateButtons(bool activate)
   ui->comboCsvFile->setEnabled(activate);
 }
 
-void MainWindow::updateStatusBar()
+void MainWindow::updateStatusBar(bool finished)
 {
+  int question = finished ? questionNumber : questionNumber - 1;
   int questions = ui->spinBoxQuestions->value();
-  int wrongAnswers = (questionNumber - 1) - correctAnswers;
-  int successRate = (questionNumber - 1) > 0 ? correctAnswers * 100 / (questionNumber - 1) : 0;
+  int wrongAnswers = question - correctAnswers;
+  int successRate = question > 0 ? correctAnswers * 100 / question : 0;
   QString results = tr("Question ") + QString::number(questionNumber) + "/" + QString::number(questions)
     + tr(" (Correct: ") + QString::number(correctAnswers) + tr(", Wrong: ") + QString::number(wrongAnswers)
     + tr(", Success rate: ") + QString::number(successRate) + " %)";
   ui->statusBar->showMessage(results);
-  //TODO: add progress bar
 }
 
 //add filenames found in csv folder to the combobox
@@ -134,7 +152,7 @@ bool MainWindow::readQuestionsAndAnswers()
   questionsAndAnswers.clear();
   questionsAlreadyAsked.clear();
 
-  QString fileName = csvFolder + ui->comboCsvFile->currentText() + ".csv";
+  QString fileName = QDir::toNativeSeparators(csvFolder + "/") + ui->comboCsvFile->currentText() + ".csv";
   QFile file(fileName);
   if(!file.open(QIODevice::ReadOnly  | QIODevice::Text)) {
     QMessageBox::warning(this, tr("Error"), tr("Error opening file ") + fileName + ": " + file.errorString());
@@ -174,6 +192,7 @@ void MainWindow::showNextQuestion()
     updateStatusBar();
   }
   else {
+    updateStatusBar(true);
     stop();
   }
 }
@@ -199,11 +218,10 @@ void MainWindow::acceptAnswerClicked()
   }
   else {
     addRow();
-    if(!ui->actionShowOnlyWrongAnswers->isChecked()) {
-      int count = ui->tableWidget->columnCount();
-      for(int i = 0; i < count; i++)
-        ui->tableWidget->item(0, i)->setTextColor(QColor("#dd0000"));
-    }
+    int count = ui->tableWidget->columnCount();
+    ui->tableWidget->item(0, 0)->setTextColor(QColor("#ee0000"));
+    for(int i = 0; i < count; i++)
+      ui->tableWidget->item(0, i)->setBackgroundColor(QColor("#eeeeee"));
   }
 
   showNextQuestion();
@@ -233,11 +251,20 @@ bool MainWindow::checkAnswer()
 void MainWindow::addRow()
 {
   ui->tableWidget->insertRow(0);
-  ui->tableWidget->setItem(0, 0, new QTableWidgetItem(ui->edAnswer->text().trimmed()));
+
   int count = questionsAndAnswers[questionId].count();
   QString translations;
-  for(int i = 1; i < count; i++)
+  for(int i = 1; i < count; i++) {
     translations += questionsAndAnswers[questionId][i];
+    if(i < count - 1)
+      translations += ", ";
+  }
+
+  if(ui->edAnswer->text().trimmed().isEmpty())
+    ui->tableWidget->setItem(0, 0, new QTableWidgetItem(tr("-empty answer-")));
+  else
+    ui->tableWidget->setItem(0, 0, new QTableWidgetItem(ui->edAnswer->text().trimmed()));
+
   ui->tableWidget->setItem(0, 1, new QTableWidgetItem(translations));
   ui->tableWidget->setItem(0, 2, new QTableWidgetItem(questionsAndAnswers[questionId][0]));
 }
@@ -280,14 +307,20 @@ void MainWindow::selectCsvFolder()
 {
   QString folder = QFileDialog::getExistingDirectory(this, tr("Select a folder containing CSV files."), csvFolder);
   if(!folder.isEmpty() && QDir(folder).isReadable())
-    csvFolder = folder;
+    csvFolder = QDir::toNativeSeparators(folder);
   populateComboCsvFile();
   activateButtons();
 }
 
+void MainWindow::openCsvFolder()
+{
+  if(!csvFolder.isEmpty() && QDir(csvFolder).isReadable())
+    QDesktopServices::openUrl(QUrl("file:///" + csvFolder));
+}
+
 void MainWindow::resetCsvFolder()
 {
-  csvFolder = "csv/";
+  csvFolder = QDir::toNativeSeparators(QApplication::applicationDirPath() + "/csv");
   populateComboCsvFile();
   activateButtons();
 }
@@ -300,17 +333,46 @@ void MainWindow::setEncoding(QAction *action)
     encoding = ISO_8859_1;
 }
 
+void MainWindow::selectLanguage()
+{
+  bool ok;
+  QStringList availableLanguages;
+  availableLanguages<<tr("en (english)")<<tr("es (spanish)")<<tr("gl (galician)");
+
+  QString selectedLanguage = QInputDialog::getItem(this, tr("Language selection"),
+    tr("Select application's language (you must restart before changes will take effect)"), availableLanguages, 0, false, &ok);
+
+  if(ok && !selectedLanguage.isEmpty()) {
+    language = selectedLanguage.left(2);
+    QMessageBox::information(this, tr("Language selection"), tr("You must restart the application before changes will take effect"));
+  }
+}
+
 void MainWindow::readSettings()
 {
   QSettings settings;
   settings.beginGroup("General");
-  csvFolder = settings.value("csvFolder", "csv/").toString();
+  csvFolder = settings.value("csvFolder", QDir::toNativeSeparators(QApplication::applicationDirPath() + "/csv")).toString();
+
   encoding = settings.value("encoding", UTF_8).toInt();
   if(encoding < UTF_8 || encoding > ISO_8859_1)
     encoding = UTF_8;
   actionGroupEncoding->actions()[encoding]->setChecked(true);
+
+  language = settings.value("language", QLocale::system().name()).toString();
+
   ui->spinBoxQuestions->setValue(settings.value("questions", 50).toInt());
   ui->actionShowOnlyWrongAnswers->setChecked(settings.value("showOnlyWrongAnswers", false).toBool());
+
+  QStringList columnSizes = settings.value("columnSizes", QStringList()).toStringList();
+  int columnSizesCount = columnSizes.count();
+  int horizontalHeaderCount = ui->tableWidget->horizontalHeader()->count();
+  for(int i = 0; i < columnSizesCount && i < horizontalHeaderCount; i++) {
+    int columnSize = columnSizes.at(i).toInt();
+    if(columnSize > 0)
+      ui->tableWidget->setColumnWidth(i, columnSize);
+  }
+
   setGeometry(settings.value("geometry", QRect(50, 50, 640, 480)).toRect());
   settings.endGroup();
 }
@@ -321,8 +383,16 @@ void MainWindow::writeSettings()
   settings.beginGroup("General");
   settings.setValue("csvFolder", csvFolder);
   settings.setValue("encoding", encoding);
+  settings.setValue("language", language);
   settings.setValue("questions", ui->spinBoxQuestions->value());
   settings.setValue("showOnlyWrongAnswers", ui->actionShowOnlyWrongAnswers->isChecked());
+
+  QStringList columnSizes;
+  int count = ui->tableWidget->horizontalHeader()->count();
+  for(int i = 0; i < count; i++)
+    columnSizes.append(QString::number(ui->tableWidget->columnWidth(i)));
+  settings.setValue("columnSizes", columnSizes);
+
   settings.setValue("geometry", geometry());
   settings.endGroup();
 }
@@ -332,3 +402,20 @@ void MainWindow::closeEvent(QCloseEvent *event)
   writeSettings();
   event->accept();
 }
+
+//void MainWindow::resizeEvent(QResizeEvent *event)
+//{
+//  int count = ui->tableWidget->horizontalHeader()->count();
+//  for(int i = 0; i < count; i++)
+//    ui->tableWidget->setColumnWidth(i, (ui->tableWidget->width() - ui->tableWidget->verticalScrollBar()->width() - 4) / 3);
+//  event->accept();
+//}
+
+//void MainWindow::showEvent(QShowEvent *event)
+//{
+//  int count = ui->tableWidget->horizontalHeader()->count();
+//  for(int i = 0; i < count; i++)
+//    ui->tableWidget->setColumnWidth(i, (ui->tableWidget->width() - ui->tableWidget->verticalScrollBar()->width() - 4) / 3);
+//  event->accept();
+//}
+

@@ -5,6 +5,8 @@
 
 class QActionGroup;
 class QCloseEvent;
+//class QResizeEvent;
+//class QShowEvent;
 
 namespace Ui {
   class MainWindow;
@@ -30,6 +32,7 @@ private:
   QList<QStringList> questionsAndAnswers;
   QList<int> questionsAlreadyAsked;
   int encoding;
+  QString language;
   int questionNumber;
   int questionId;
   int correctAnswers;
@@ -39,7 +42,7 @@ private:
 
 private slots:
   void activateButtons(bool activate = true);
-  void updateStatusBar();
+  void updateStatusBar(bool finished = false);
   void populateComboCsvFile();
 
   void start();
@@ -55,13 +58,17 @@ private slots:
   void showAbout();
   void showAboutQt();
   void selectCsvFolder();
+  void openCsvFolder();
   void resetCsvFolder();
   void setEncoding(QAction *action);
+  void selectLanguage();
   void readSettings();
   void writeSettings();
 
 protected:
   void closeEvent(QCloseEvent *event);
+  //void resizeEvent(QResizeEvent *event);
+  //void showEvent(QShowEvent *event);
 };
 
 #endif // MAINWINDOW_H

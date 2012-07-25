@@ -16,14 +16,18 @@ RCC_DIR = compile
 UI_DIR = compile
 
 SOURCES += src/main.cpp\
-  src/mainwindow.cpp
+  src/mainwindow.cpp \
+    src/itemdelegate.cpp
 
-HEADERS += src/mainwindow.h
+HEADERS += src/mainwindow.h \
+    src/itemdelegate.h
 
 FORMS += src/mainwindow.ui
 
 TRANSLATIONS += translations/qaskwords_es.ts\
   translations/qaskwords_gl.ts
+
+OTHER_FILES += README.md
 
 # INSTALL
 isEmpty(PREFIX):PREFIX = /usr

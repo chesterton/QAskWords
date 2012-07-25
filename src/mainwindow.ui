@@ -90,14 +90,14 @@
         <property name="font">
          <font>
           <pointsize>20</pointsize>
-          <italic>true</italic>
+          <italic>false</italic>
          </font>
         </property>
         <property name="text">
          <string>Question</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -122,15 +122,33 @@
     </item>
     <item>
      <widget class="QTableWidget" name="tableWidget">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
       </property>
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
-      <property name="showGrid">
-       <bool>false</bool>
+      <property name="verticalScrollMode">
+       <enum>QAbstractItemView::ScrollPerItem</enum>
       </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="showGrid">
+       <bool>true</bool>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>190</number>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
        <number>18</number>
       </attribute>
@@ -152,6 +170,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionSelectCsvFolder"/>
+    <addaction name="actionOpenCsvFolder"/>
     <addaction name="actionResetCsvFolder"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -168,6 +187,7 @@
      <addaction name="actionISO_8859_1"/>
     </widget>
     <addaction name="menuEncoding"/>
+    <addaction name="actionSelectLanguage"/>
     <addaction name="actionShowOnlyWrongAnswers"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -251,6 +271,16 @@
    </property>
    <property name="toolTip">
     <string>Reset csv folder</string>
+   </property>
+  </action>
+  <action name="actionOpenCsvFolder">
+   <property name="text">
+    <string>&amp;Open csv folder</string>
+   </property>
+  </action>
+  <action name="actionSelectLanguage">
+   <property name="text">
+    <string>Select &amp;language</string>
    </property>
   </action>
  </widget>
