@@ -27,7 +27,9 @@ FORMS += src/mainwindow.ui
 TRANSLATIONS += translations/qaskwords_es.ts\
   translations/qaskwords_gl.ts
 
-OTHER_FILES += README.md
+OTHER_FILES += README.md \
+    COPYING \
+    LICENSE
 
 # INSTALL
 isEmpty(PREFIX):PREFIX = /usr

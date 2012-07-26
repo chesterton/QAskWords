@@ -4,9 +4,13 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.ui" line="14"/>
         <source>MainWindow</source>
-        <translation>MainWindow</translation>
+        <translation type="obsolete">MainWindow</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="14"/>
+        <source>QaskWords</source>
+        <translation>QAskWords</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="29"/>
@@ -63,7 +67,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="210"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="215"/>
@@ -130,134 +134,139 @@
         <translation type="obsolete">Resposta,Traduccións,Orixinal</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="59"/>
+        <location filename="../src/mainwindow.cpp" line="73"/>
         <source>Answer,Correct answers,Original word</source>
         <translation>Resposta,Respostas correctas,Palabra orixinal</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="99"/>
+        <location filename="../src/mainwindow.cpp" line="113"/>
         <source>Question </source>
         <translation>Pregunta </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="100"/>
+        <location filename="../src/mainwindow.cpp" line="114"/>
         <source> (Correct: </source>
         <translation> (Correctas: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="100"/>
+        <location filename="../src/mainwindow.cpp" line="114"/>
         <source>, Wrong: </source>
         <translation>, Incorrectas: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="101"/>
+        <location filename="../src/mainwindow.cpp" line="115"/>
         <source>, Success rate: </source>
         <translation>, Porcentaxe de acerto: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="118"/>
-        <location filename="../src/mainwindow.cpp" line="158"/>
+        <location filename="../src/mainwindow.cpp" line="132"/>
+        <location filename="../src/mainwindow.cpp" line="174"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="119"/>
+        <location filename="../src/mainwindow.cpp" line="133"/>
         <source>Error: the number of questions should be at most the number of questions found in the selected file (</source>
         <translation>Erro: o número de preguntas debe ser como máximo o número de preguntas atopado no arquivo seleccionado (</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="120"/>
+        <location filename="../src/mainwindow.cpp" line="134"/>
         <source> questions)</source>
         <translation> preguntas)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="140"/>
+        <location filename="../src/mainwindow.cpp" line="156"/>
         <source>Questions: </source>
         <translation>Preguntas: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="141"/>
+        <location filename="../src/mainwindow.cpp" line="157"/>
         <source>Correct: </source>
         <translation>Correctas: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="142"/>
+        <location filename="../src/mainwindow.cpp" line="158"/>
         <source>Wrong: </source>
         <translation>Incorrectas: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="143"/>
+        <location filename="../src/mainwindow.cpp" line="159"/>
         <source>Success rate: </source>
         <translation>Porcentaxe de acerto: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="145"/>
+        <location filename="../src/mainwindow.cpp" line="161"/>
         <source>Final results</source>
         <translation>Resultado final</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="158"/>
+        <location filename="../src/mainwindow.cpp" line="174"/>
         <source>Error opening file </source>
         <translation>Erro abrindo o arquivo </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="264"/>
+        <location filename="../src/mainwindow.cpp" line="279"/>
         <source>-empty answer-</source>
         <translation>-resposta baleira-</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="275"/>
+        <location filename="../src/mainwindow.cpp" line="290"/>
         <source>Perfect. You&apos;re the best!</source>
         <translation>Perfecto. ¡Es o mellor!</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
+        <location filename="../src/mainwindow.cpp" line="292"/>
         <source>Almost perfect. You&apos;re great!</source>
         <translation>Prácticamente pefercto. ¡Es un xenio!</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="279"/>
+        <location filename="../src/mainwindow.cpp" line="294"/>
         <source>Pretty good. You&apos;re going in the right direction.</source>
         <translation>Bastante ben. Vas polo bo camiño.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="281"/>
+        <location filename="../src/mainwindow.cpp" line="296"/>
         <source>Acceptable. You need to practice a little more.</source>
         <translation>Aceptable. Precisas practicar un pouco máis.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="283"/>
+        <location filename="../src/mainwindow.cpp" line="298"/>
         <source>Pretty bad. You need to practice a lot more.</source>
         <translation>Bastante mal. Precisas practicar moito máis.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="307"/>
+        <source>About </source>
+        <translation>Acerca de </translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="356"/>
         <source>en (english)</source>
         <translation>en (inglés)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="356"/>
         <source>es (spanish)</source>
         <translation>es (español)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="356"/>
         <source>gl (galician)</source>
         <translation>gl (galego)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="342"/>
-        <location filename="../src/mainwindow.cpp" line="347"/>
+        <location filename="../src/mainwindow.cpp" line="358"/>
+        <location filename="../src/mainwindow.cpp" line="363"/>
         <source>Language selection</source>
         <translation>Selección de idioma</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="343"/>
+        <location filename="../src/mainwindow.cpp" line="359"/>
         <source>Select application&apos;s language (you must restart before changes will take effect)</source>
         <translation>Selecciona o idioma da aplicación (debes reiniciar a aplicación para que os cambios surtan efecto)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="347"/>
+        <location filename="../src/mainwindow.cpp" line="363"/>
         <source>You must restart the application before changes will take effect</source>
         <translation>Debes reiniciar a aplicación para que os cambios surtan efecto</translation>
     </message>
@@ -266,52 +275,56 @@
         <translation type="obsolete">Bastante mal. Precisas practicar bastante máis.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="285"/>
+        <location filename="../src/mainwindow.cpp" line="300"/>
         <source>You&apos;re very bad, but don&apos;t despair. Some day you&apos;ll make it if you keep trying.</source>
         <translation>Es moi malo, pero non desesperes. Algún día lograralo se sigues tentándoo.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="287"/>
+        <location filename="../src/mainwindow.cpp" line="302"/>
         <source>Are you kidding me? I can&apos;t believe you&apos;re really so bad.</source>
         <translation>¿Tómasme o pelo? Non podo crer que sexas realmente tan malo.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="292"/>
         <source>About QAskWords</source>
-        <translation>Acerca de QAskWords</translation>
+        <translation type="obsolete">Acerca de QAskWords</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="293"/>
+        <location filename="../src/mainwindow.cpp" line="308"/>
         <source>QAskWords is a simple application that makes words translation tests by reading csv files (sepearated by semicolons) containing rows with a word and one or more translations for that word.</source>
         <translation>QAskWords é unha sinxela aplicación que realiza tests de traducción de palabras lendo arquivos csv (separados por punto e coma) que conteñan filas cunha palabra e unha ou máis traduccións para esa palabra.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="294"/>
+        <location filename="../src/mainwindow.cpp" line="309"/>
         <source>Enjoy it and send comments, bug reports, or whatever you want to miguelescudero@users.sourceforge.net.</source>
         <translation>Desfrútao e envía comentarios, información sobre erros ou o que queiras a miguelescudero@users.sourceforge.net.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="295"/>
+        <location filename="../src/mainwindow.cpp" line="310"/>
         <source>Credits:</source>
         <translation>Créditos:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="296"/>
+        <location filename="../src/mainwindow.cpp" line="311"/>
         <source>Developer:</source>
         <translation>Programador:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="297"/>
+        <location filename="../src/mainwindow.cpp" line="312"/>
         <source>Spanish translation:</source>
         <translation>Traducción ó castelán:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="298"/>
+        <location filename="../src/mainwindow.cpp" line="313"/>
         <source>Galician translation:</source>
         <translation>Traducción ó galego:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="308"/>
+        <location filename="../src/mainwindow.cpp" line="314"/>
+        <source>Sample csv files:</source>
+        <translation>Arquivos csv de exemplo:</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="324"/>
         <source>Select a folder containing CSV files.</source>
         <translation>Selecciona unha carpeta que contenga arquivos CSV.</translation>
     </message>

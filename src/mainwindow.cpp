@@ -1,3 +1,23 @@
+/***************************************************************************
+ *   Copyright (C) 2012 by Miguel Escudero Gestal
+ *   miguelescudero@users.sourceforge.net
+ *
+ *   This file is part of QAskWords
+ *
+ *   QAskWords is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   QAskWords is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program. If not, see <http://www.gnu.org/licenses/>.
+ ***************************************************************************/
+
 #include "mainwindow.h"
 #include "../compile/ui_mainwindow.h"
 #include "itemdelegate.h"
@@ -31,17 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
   populateComboCsvFile();
   activateButtons();
 
-  //DONE: diálogo para cambiar idiomas
-  //DONE: guardar los tamaños de las cabeceras de la tabla
-  //DONE: poner líneas en la tabla
-  //DONE: añadir entrada en el menú para abrir el explorer en la carpeta csv
-  //DONE: al meter un texto vacío debería aparecer -empty- en la tabla
-
-  //TODO: añadir los csv de patri al repositorio
-  //TODO: configurar .pro para que sea instalable en linux con todos los csv de muestra. puede que haya que cambiar la carpeta por defecto.
-  //TODO: mejorar readme para poner algo decente en github
-  //TODO: publicar en qtapps, tanto la versión para linux como la versión para windows
+  //TODO: configurar .pro para que sea instalable en linux con todos los csv de muestra. la carpeta por defecto debe ser $HOME/.config/QAskWords/csv
+  //TODO: publicar en qtapps, tanto la versión para linux como la versión para windows (si el tamaño de esta lo permite, que lo dudo)
   //TODO: editor
+  //TODO: estadísticas
 }
 
 MainWindow::~MainWindow()
@@ -135,6 +148,8 @@ void MainWindow::start()
 
 void MainWindow::stop()
 {
+  updateStatusBar(true);
+
   int wrongAnswers = questionNumber - correctAnswers;
   int successRate = questionNumber > 0 ? correctAnswers * 100 / questionNumber : 0;
   QString results = tr("Questions: ") + QString::number(questionNumber) + "\n"
@@ -192,7 +207,6 @@ void MainWindow::showNextQuestion()
     updateStatusBar();
   }
   else {
-    updateStatusBar(true);
     stop();
   }
 }
@@ -289,13 +303,14 @@ QString MainWindow::textResult(int n)
 
 void MainWindow::showAbout()
 {
-  QMessageBox::about(this, tr("About QAskWords"),
+  QMessageBox::about(this, tr("About ") + "QAskWords 1.1.0.2",
     tr("QAskWords is a simple application that makes words translation tests by reading csv files (sepearated by semicolons) containing rows with a word and one or more translations for that word.")
     + tr("Enjoy it and send comments, bug reports, or whatever you want to miguelescudero@users.sourceforge.net.") + "\n\n"
     + tr("Credits:") + "\n"
     + tr("Developer:") + " Miguel Escudero" + "\n"
     + tr("Spanish translation:") + " Miguel Escudero" + "\n"
-    + tr("Galician translation:") + " Miguel Escudero" + "\n");
+    + tr("Galician translation:") + " Miguel Escudero" + "\n"
+    + tr("Sample csv files:") + " Patricia Escudero" + "\n");
 }
 
 void MainWindow::showAboutQt()
