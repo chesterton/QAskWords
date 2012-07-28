@@ -20,7 +20,6 @@
 
 #include "mainwindow.h"
 #include "../compile/ui_mainwindow.h"
-#include "itemdelegate.h"
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
@@ -35,6 +34,7 @@
 #include <QTime>
 #include <QUrl>
 #include <QInputDialog>
+#include <QItemDelegate>
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -68,7 +68,7 @@ void MainWindow::createObjects()
   actionGroupEncoding->addAction(ui->actionUTF_8);
   actionGroupEncoding->addAction(ui->actionISO_8859_1);
 
-  ui->tableWidget->setItemDelegate(new ItemDelegate(ui->tableWidget));
+  ui->tableWidget->setItemDelegate(new QItemDelegate(ui->tableWidget));
   QStringList headerLabels(QString(tr("Answer,Correct answers,Original word")).split(","));
   int headerLabelsCount = headerLabels.count();
   ui->tableWidget->setColumnCount(headerLabelsCount);

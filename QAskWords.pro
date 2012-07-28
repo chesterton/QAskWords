@@ -16,11 +16,9 @@ RCC_DIR = compile
 UI_DIR = compile
 
 SOURCES += src/main.cpp\
-  src/mainwindow.cpp \
-    src/itemdelegate.cpp
+  src/mainwindow.cpp
 
-HEADERS += src/mainwindow.h \
-    src/itemdelegate.h
+HEADERS += src/mainwindow.h
 
 FORMS += src/mainwindow.ui
 
